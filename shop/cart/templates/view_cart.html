@@ -11,5 +11,8 @@
     <title>Title</title>
   </head>
  <body>
-    <h1>Cart</h1>
+  {% for item in cart_items %}
+    <h1>{{item.product}}</h1>
+    <h1>{{item.quantity}}</h1>
+  {% endfor %}
  </body>

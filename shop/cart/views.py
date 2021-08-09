@@ -46,7 +46,8 @@ def view_cart(request):
     order_total = Decimal(0.0)
     for item in cart_items:
         order_total += (item.product.price * item.quantity)
-    return render(request, template_name = 'view_cart.html')
+    context = {'cart_items': cart_items, 'order_total': order_total}
+    return render(request,'view_cart.html', context)
 
 
 def add_to_cart(request, slug):

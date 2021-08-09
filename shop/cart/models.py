@@ -5,7 +5,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated_at = models.DateTimeField(auto_now_add=False, auto_now=True)

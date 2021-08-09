@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
-from .models import Category, Product, Comment, News, Post, MyUserManager, CustomUser
+from .models import Category, Product, Comment, News, Post, MyUserManager, CustomUser, Picture
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext as _
 from store import models
@@ -46,6 +46,6 @@ admin.site.register(Product)
 admin.site.register(Post)
 admin.site.register(Comment)
 admin.site.register(News)
-
+admin.site.register(Picture)
 admin.site.register(Cart)
 admin.site.register(CartItem)
