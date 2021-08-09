@@ -40,9 +40,12 @@ INSTALLED_APPS = [
     'taggit',
     'store',
     'crispy_forms',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
-
+AUTH_USER_MODEL = "store.User" 
 crispy_template_pack = 'bootstrap 4'
+ROOT_URLCONF = 'shop.urls'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
