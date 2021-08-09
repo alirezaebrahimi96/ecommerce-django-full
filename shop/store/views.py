@@ -29,24 +29,15 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from . import models
-from .serializers import UserSerializer, AuthTokenSerializer
+from django.conf import settings
+User = settings.AUTH_USER_MODEL
 
-class CreateUserView(generics.CreateAPIView):
-    
-    serializer_class = UserSerializer
-
-class CreateTokenView(ObtainAuthToken):
-    
-    serializer_class = AuthTokenSerializer
-    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES    
-    
     
 def homepage(request):
     products = models.Product.objects.all()
-    products_serialized = serializers.serialize('json', products)
     categories = models.Category.objects.all()
-    categories_serialized = serializers.serialize('json', categories)
-    return JsonResponse(products_serialized, encoder=JSONEncoder, safe=False)
+    context = {'products': products, 'categories': categories}
+    return render(request, 'home.html', context)
 
 
 def register_request(request):
@@ -56,14 +47,13 @@ def register_request(request):
 			user = form.save()
 			login(request, user)
 			messages.success(request, "Registration successful." )
-			return redirect("main:homepage")
+			return redirect("store:homepage")
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	form = NewUserForm()
 	return render (request=request, template_name="register.html", context={"register_form":form})
 
 
 @csrf_exempt
-@require_POST
 def login_request(request):
     if request.method == "POST":
 	    form = AuthenticationForm(request, data=request.POST)
@@ -80,7 +70,7 @@ def login_request(request):
 	    else:
 		    messages.error(request,"Invalid username or password.")
     form = AuthenticationForm()
-    return JsonResponse(context={"login_form":form}, encoder=JSONEncoder)
+    return render(request, "login.html", context={"login_form":form})
 
 
 
@@ -88,6 +78,5 @@ def login_request(request):
 @csrf_exempt
 def news(request):
     news = models.News.objects.all().order_by('-date')[:11]
-    news_serialized = serializers.serialize("json", news)
-    return JsonResponse(news_serialized, encoder=JSONEncoder, safe=False)
+    return render(request, 'home.html')
 

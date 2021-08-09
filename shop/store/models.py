@@ -4,42 +4,76 @@ from django.db import models
 from taggit.managers import TaggableManager
 from django.urls import reverse
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.utils import timezone
+from django.conf import settings
+User = settings.AUTH_USER_MODEL
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
                                         PermissionsMixin
-                              
-                              
-                                        
-class UserManager(BaseUserManager):
-    
-    def create_user(self, email, password=None, **extra_fields):
-        
-        if not email:
-            raise ValueError('Users must have an email address')
-        user = self.model(email=self.normalize_email(email), **extra_fields)
+
+
+class MyUserManager(BaseUserManager):
+    def _create_user(self, first_name, last_name, phone, address1, state, zipcode, email, username, password, is_superuser):
+
+        user=self.model(
+            first_name = first_name,
+            last_name = last_name,
+            phone = phone,
+            address1 = address1,
+            zipcode = zipcode,
+            state = state,
+            email=email, 
+            username = username,
+            password = password,
+            is_superuser = is_superuser,
+            )
+        user.is_superuser = False
+        user.is_admin = False
+        user.is_staff = False
         user.set_password(password)
         user.save(using=self._db)
-        
-        return user 
-    
-    def create_superuser(self, email, password):
-        user = self.create_user(email, password)
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
-        
         return user
 
-class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
+    def create_user(self, first_name, last_name, phone, address1, state, zipcode, email, username, password, **extra_fields):
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(first_name, last_name, phone, address1, state, zipcode, email, username, password, **extra_fields)
+
+    def create_superuser(self, first_name, last_name, phone, address1, state, zipcode, email, username, password, **extra_fields):
+        extra_fields.setdefault('is_superuser', True)  
+                                 
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(first_name, last_name, phone, address1, state, zipcode, email, username, password, **extra_fields)
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    first_name = models.CharField(max_length=25)
+    last_name = models.CharField(max_length=25)
+    phone = models.DecimalField(max_digits=12, decimal_places=0, unique=True)
+    address1 = models.CharField(null=True, max_length=100, blank=True)
+    zipcode = models.CharField(max_length=10, null=True,blank=True)
+    state = models.CharField(null=True, max_length=25, blank=True)
+    email = models.EmailField(max_length = 250, unique=True)
+    username = models.CharField(max_length = 25, unique=True)
+    password = models.CharField(max_length =25, null=True)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     
-    objects = UserManager()
+    objects = MyUserManager()
     
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'phone', 'password', 'zipcode', 'address1', 'state']
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    def __str__(self):
+        return f'{self.first_name} ({self.last_name}) ({self.email})'
+
+
 
 
 
@@ -49,10 +83,12 @@ choices = (
     ("I don't know", "I don't know")
 )
 
-
+class Picture(models.Model):
+    name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="products/images", blank=True)
 
 class Comment(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     text = models.TextField(blank=True)
     star = models.DecimalField(max_digits=1, decimal_places=0)
@@ -85,7 +121,7 @@ class Product(models.Model):
     comment = models.ManyToManyField(Comment, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
     tags = TaggableManager(blank=True)
-    picture = models.ImageField(upload_to="products/images", null=True, blank=True)
+    picture = models.ManyToManyField(Picture, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     quantity = models.IntegerField(default=10)
     featured = models.BooleanField(default=False)       
@@ -103,44 +139,28 @@ class Product(models.Model):
     @property
     def is_available(self):
         return self.quantity > 0
-    
-    
-    
-    
-class Token(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=48)
+   
 
-    def __unicode__(self):
-        return "{}_token".format(self.user)
-    
-    
     
     
 class News(models.Model):
     title = models.CharField(max_length=250)
     text = models.TextField(blank = True)
     date = models.DateTimeField(auto_now_add=True)
+    picture = models.ManyToManyField(Picture, blank=True)
+    
     def __unicode__(self):
         return self.title
     
 
-    
-
-class Passwordresetcodes(models.Model):
-    code = models.CharField(max_length=32)
-    email = models.CharField(max_length=120)
-    time = models.DateTimeField()
-    username = models.CharField(max_length=50)
-    password = models.CharField(max_length=50)
-    
-    
     
 class Post(models.Model):
     title = models.CharField(max_length=250)
     text = models.TextField(blank = True)
     date = models.DateTimeField(auto_now_add=True)
     comment = models.ManyToManyField(Comment, blank=True)
+    picture = models.ManyToManyField(Picture, blank=True)
+
 
     def __unicode__(self):
         return self.title

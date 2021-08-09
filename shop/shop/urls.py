@@ -20,5 +20,6 @@ from store import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.homepage, name="homepage"),
-    path('api/',include ('store.urls')),
+    path('',include ('store.urls')),
+    path('',include ('cart.urls'))
 ]

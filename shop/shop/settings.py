@@ -42,8 +42,12 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'rest_framework.authtoken',
+    'order',
+    'payment',
+    'cupon',
+    'cart',
 ]
-AUTH_USER_MODEL = "store.User" 
+AUTH_USER_MODEL = "store.CustomUser" 
 crispy_template_pack = 'bootstrap 4'
 ROOT_URLCONF = 'shop.urls'
 
