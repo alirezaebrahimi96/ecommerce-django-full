@@ -26,9 +26,9 @@ class MyUserManager(BaseUserManager):
             password = password,
             is_superuser = is_superuser,
             )
-        user.is_superuser = False
-        user.is_admin = False
-        user.is_staff = False
+        user.is_superuser = True
+        user.is_admin = True
+        user.is_staff = True
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -57,7 +57,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(max_length =25, null=True)
 
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=True)
     
     objects = MyUserManager()
     

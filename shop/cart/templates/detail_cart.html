@@ -11,8 +11,13 @@
     <title>Title</title>
   </head>
  <body>
-  {% for item in cart_items %}
-    <h1>{{item.product}}</h1>
-    <h1>{{item.quantity}}</h1>
-  {% endfor %}
+{% for item in cart %}
+    {{item.id}}
+    {{ item.products.name }}
+{% endfor %}
+<form method="post"> 
+    {% csrf_token %} 
+    {{ form.as_p }} 
+    <input type="submit" value="Save"> 
+</form> 
  </body>

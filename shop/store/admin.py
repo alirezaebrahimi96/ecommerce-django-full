@@ -10,7 +10,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext as _
 from store import models
 from . import forms
-from cart.models import Cart, CartItem
+from cart.models import Cart, CartItem, Order
 # Register your models here.
 
         
@@ -49,3 +49,4 @@ admin.site.register(News)
 admin.site.register(Picture)
 admin.site.register(Cart)
 admin.site.register(CartItem)
+admin.site.register(Order)

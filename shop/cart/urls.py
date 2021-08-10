@@ -1,15 +1,21 @@
+from django.urls import path, include
 
-from django.urls import path
+from . import views
 
-from cart import views
-
-app_name = 'cart'   
-
+# Cart Urls
 urlpatterns = [
-    path('get_cart_count/', views.get_cart_count, name='get_cart_count'),
-    path("get_user_cart/", views.get_user_cart, name="get_user_cart"),
-    path("update_cart_info/", views.update_cart_info, name="update_cart_info"),
-    path("view_cart/", views.view_cart, name="view_cart"),
-    path("add_to_cart/<slug>/", views.add_to_cart, name="add_to_cart"),
-    path("remove_from_cart/<id>", views.remove_from_cart, name="remove_from_cart"),
+    path('cart/', views.ListCart, name='list-carts'),
+    path('cart/<int:pk>/', views.DetailCart.as_view(), name='detail-cart'),
+    path('cart/create/', views.CreateCart.as_view(), name='create-cart'),
+    path('cart/<int:pk>/update/', views.Updatecart.as_view(), name='update-cart'),
+    path('cart/<int:pk>/delete/', views.DeleteCart.as_view(), name='delete-cart'),
+]
+
+# CartItem Urls
+urlpatterns += [
+    path('cartitem/', views.ListCartItem.as_view(), name='list-cartitem'),
+    path('cartitem/<int:pk>/', views.DetailCartItem.as_view(), name='detail-cartitem'),
+    path('cartitem/create/', views.CreateCartItem.as_view(), name='create-cartitem'),
+    path('cartitem/<int:pk>/update/', views.UpdateCartItem.as_view(), name='update-cartitem'),
+    path('cartitem/<int:pk>/delete/', views.DeleteCartItem.as_view(), name='delete-cartitem'),
 ]
