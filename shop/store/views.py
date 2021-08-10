@@ -32,11 +32,17 @@ from . import models
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
-    
+
+
 def homepage(request):
     products = models.Product.objects.all()
     categories = models.Category.objects.all()
     context = {'products': products, 'categories': categories}
+    if request.method == "POST":
+        query_name = request.POST.get('name', None)
+        if query_name:
+            results = models.Product.objects.filter(name__contains=query_name)
+            return render(request, 'product-search.html', {"results":results})
     return render(request, 'home.html', context)
 
 
@@ -79,4 +85,7 @@ def login_request(request):
 def news(request):
     news = models.News.objects.all().order_by('-date')[:11]
     return render(request, 'home.html')
+
+
+
 

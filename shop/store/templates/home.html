@@ -4,4 +4,10 @@
 
 <h1>hello world</h1>
 
+<form action="{% url 'homepage' %}" method="POST">
+    {% csrf_token %} 
+    <input type="text" name="name">
+    <input type="submit" name="submit" value="Search">
+</form>
+
 {% endblock %}

@@ -1,36 +1,33 @@
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
-
 from .models import Cart, CartItem
 
 ##-------------- Cart Views --------------------------------------
 class DetailCart(DetailView):
     model = Cart
-    template_name='detail_cart.html'
-    
-    def get_context_data(self, *args, **kwargs):
-        context = super(DetailCart, self).get_context_data(*args, **kwargs)
-        context['cart'] = Cart.objects.all()
-
-        return context
+    template_name='cart.html'
 
 
 class ListCart(ListView):
     model = Cart
-    context_object_name = 'carts'
-    template_name='cart/list_carts.html'
+    template_name = 'carts.html'
+
 
 class CreateCart(CreateView):
     model = Cart
-    template_name = 'cart/create_cart.html'
+    fields = ['name', 'items']
+    template_name = 'carts.html'
 
 class Updatecart(UpdateView):
     model = Cart
-    template_name = 'cart/update_cart.html'
+    fields = [
+        "items",
+    ]
+    template_name = 'carts.html'
 
 class DeleteCart(DeleteView):
     model = Cart
-    template_name = 'cart/delete_cart.html'
+    template_name = 'carts.html'
 
 
 ##-------------- CartItem Views --------------------------------------

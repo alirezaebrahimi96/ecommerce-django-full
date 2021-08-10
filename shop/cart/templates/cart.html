@@ -12,8 +12,8 @@
   </head>
  <body>
 {% for item in cart %}
-    {{item.id}}
-    {{ item.products.name }}
+    {{ item.items }}
+    {{ item.updated_at }}
 {% endfor %}
 <form method="post"> 
     {% csrf_token %} 
