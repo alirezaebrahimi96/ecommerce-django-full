@@ -5,6 +5,7 @@ from taggit.managers import TaggableManager
 from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
+import datetime
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
@@ -114,7 +115,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    author = models.ForeignKey(User, on_delete = models.CASCADE)
+    #author = models.ForeignKey(User, on_delete = models.CASCADE, null=True)
     name = models.CharField(max_length=150)
     description = models.TextField(max_length=500, default="Empty description.")    
     category = models.ManyToManyField(Category, blank=True)
@@ -123,8 +124,9 @@ class Product(models.Model):
     tags = TaggableManager(blank=True)
     picture = models.ManyToManyField(Picture, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=20, default=0)
-    quantity = models.IntegerField(default=10)
-    featured = models.BooleanField(default=False)       
+    quantity = models.PositiveIntegerField(default=10)
+    quantity_in_store = models.PositiveIntegerField()
+    featured = models.BooleanField(default=False)     
     
     class Meta:
         ordering = ("name",)
@@ -139,8 +141,7 @@ class Product(models.Model):
     @property
     def is_available(self):
         return self.quantity > 0
-   
-
+    
     
     
 class News(models.Model):

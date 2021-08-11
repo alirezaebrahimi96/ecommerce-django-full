@@ -11,6 +11,7 @@ from django.utils.translation import gettext as _
 from store import models
 from . import forms
 from cart.models import Cart, CartItem, Order
+from cupon.models import cupon
 # Register your models here.
 
         
@@ -50,3 +51,4 @@ admin.site.register(Picture)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 admin.site.register(Order)
+admin.site.register(cupon)

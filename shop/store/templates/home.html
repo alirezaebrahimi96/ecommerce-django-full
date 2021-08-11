@@ -10,4 +10,15 @@
     <input type="submit" name="submit" value="Search">
 </form>
 
+{% for item in products %}
+    <h1>ID</h1>
+    <h1>{{ item.id }}</h1>
+    <h1>{{ item.name }}</h1>
+    <h1>{{ item.quantity }}</h1>
+{% endfor %}
+{% for item in items %}
+    <h1>{{ item.product_id }}</h1>
+    <h1>{{ item.quantity }}</h1>
+{% endfor %}
+
 {% endblock %}

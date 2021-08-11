@@ -31,13 +31,24 @@ from django.contrib.auth.forms import AuthenticationForm
 from . import models
 from django.conf import settings
 User = settings.AUTH_USER_MODEL
-
-
+from cart.models import CartItem
 
 def homepage(request):
     products = models.Product.objects.all()
     categories = models.Category.objects.all()
-    context = {'products': products, 'categories': categories}
+    items = CartItem.objects.all()	
+    for product in products:
+        for item in items:
+            if item.position==True:
+                if product.quantity > 0:
+                    product.quantity_in_store = product.quantity - item.quantity
+                    item.position = False
+                    item.save()
+                    if product.quantity >= 0:
+                        product.save()
+                        item.position = False
+                        item.save()
+    context = {'products': products, 'categories': categories, 'items': items}
     if request.method == "POST":
         query_name = request.POST.get('name', None)
         if query_name:
